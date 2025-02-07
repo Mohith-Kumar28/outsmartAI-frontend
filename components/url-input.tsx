@@ -20,6 +20,7 @@ const UrlInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =>
     return (
         <div className="">
             <BeamInput shortenedUrl={shortenedUrl} setShortenedUrl={setShortenedUrl} />
+          
         </div>
     );
 };

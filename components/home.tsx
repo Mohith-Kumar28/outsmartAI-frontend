@@ -5,6 +5,7 @@ import { AuroraBackground } from "./ui/aurora-background";
 import { shortenUrl } from "@/app/actions/url";
 import { useEffect, useState } from "react";
 import { UrlInput } from "./url-input";
+import { ShortenedUrl } from "./shortened-url";
 
 export default function Home() {
     const [shortenedUrl, setShortenedUrl] = useState<string>("");
@@ -59,21 +60,13 @@ export default function Home() {
 
                         <div className="p-2">
                             <div className="bg-[#353535]/60 backdrop-blur-md px-6 py-6 text-[#f0d8b9] rounded-xl">
-                                <div className="w-full max-w-xl space-y-2">
+                                <div className="w-full max-w-xl space-y-10">
                                     <UrlInput 
                                         shortenedUrl={shortenedUrl} 
                                         setShortenedUrl={setShortenedUrl} 
                                     />
                                     {shortenedUrl ? (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.5 }}
-                                            className="mt-6 p-4 border border-white/20 rounded-lg bg-gradient-to-br from-white/10 to-transparent"
-                                        >
-                                            <p className="text-sm text-[#f0d8b9] mb-2">Your shortened URL:</p>
-                                            <TextGenerateEffect words={shortenedUrl} className="text-[#f0d8b9] break-all" />
-                                        </motion.div>
+                                       <div className=""><ShortenedUrl url={shortenedUrl} /></div>
                                     ) : (
                                         <div className="space-y-4 mt-6">
                                             <p className="text-[#f0dcc3] text-sm md:text-xl max-w-xl text-left font-sourceSan">
