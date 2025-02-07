@@ -7,13 +7,24 @@ import { useEffect, useState } from "react";
 import { UrlInput } from "./url-input";
 import { ShortenedUrl } from "./shortened-url";
 
+interface RecentUrl {
+    originalUrl: string;
+    shortUrl: string;
+    timestamp: number;
+}
+
 export default function Home() {
     const [shortenedUrl, setShortenedUrl] = useState<string>("");
     const [isMounted, setIsMounted] = useState<boolean>(false);
+    const [recentUrls, setRecentUrls] = useState<RecentUrl[]>([]);
 
-    // Add useEffect to handle client-side mounting
+    // Add useEffect to handle client-side mounting and load recent URLs
     useEffect(() => {
         setIsMounted(true);
+        const storedUrls = localStorage.getItem('recentUrls');
+        if (storedUrls) {
+            setRecentUrls(JSON.parse(storedUrls));
+        }
     }, []);
 
     // Return null or a loading state until client-side code is ready
@@ -66,7 +77,9 @@ export default function Home() {
                                         setShortenedUrl={setShortenedUrl} 
                                     />
                                     {shortenedUrl ? (
-                                       <div className=""><ShortenedUrl url={shortenedUrl} /></div>
+                                        <div className="space-y-6">
+                                            <ShortenedUrl url={shortenedUrl} />
+                                        </div>
                                     ) : (
                                         <div className="space-y-4 mt-6">
                                             <p className="text-[#f0dcc3] text-sm md:text-xl max-w-xl text-left font-sourceSan">
@@ -75,6 +88,25 @@ export default function Home() {
                                                 Experience seamless navigation across platforms.
                                             </p>
                                             <TextGenerateEffect className="font-playfair" words="The future of smart linking is here" />
+                                        </div>
+                                    )}
+                                    {recentUrls.length > 0 && (
+                                        <div className="mt-8 border-t border-white/10 pt-6">
+                                            <h3 className="text-lg font-semibold mb-4">Recent URLs</h3>
+                                            <div className="space-y-3">
+                                                {recentUrls.map((item, index) => (
+                                                    <a
+                                                        key={index}
+                                                        href={item.shortUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="block p-3 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+                                                    >
+                                                        <p className="text-sm font-medium truncate">{item.shortUrl}</p>
+                                                        <p className="text-xs text-white/60 truncate">{item.originalUrl}</p>
+                                                    </a>
+                                                ))}                                                
+                                            </div>
                                         </div>
                                     )}
                                 </div>

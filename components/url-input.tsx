@@ -52,6 +52,21 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
             if (result.success) {
                 const shortUrl = `${window.location.origin}/redirect/${result.code}`;
                 setShortenedUrl(shortUrl);
+                
+                // Update recent URLs in local storage
+                const storedUrls = localStorage.getItem('recentUrls');
+                const recentUrls = storedUrls ? JSON.parse(storedUrls) : [];
+                
+                const newUrl = {
+                    originalUrl: url,
+                    shortUrl: shortUrl,
+                    timestamp: Date.now()
+                };
+                
+                // Add new URL to the beginning and keep only the last 5
+                const updatedUrls = [newUrl, ...recentUrls].slice(0, 5);
+                localStorage.setItem('recentUrls', JSON.stringify(updatedUrls));
+                
                 toast({
                     description: "URL shortened successfully!",
                 });
