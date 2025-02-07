@@ -22,6 +22,45 @@ async function getOriginalUrl(code: string) {
   }
 }
 
+const appSchemes: Record<string, Record<string, string>> = {
+  'youtube.com': {
+    ios: 'youtube://',
+    android: 'vnd.youtube:',
+  },
+  'twitter.com': {
+    ios: 'twitter://',
+    android: 'twitter://',
+  },
+  'instagram.com': {
+    ios: 'instagram://',
+    android: 'instagram://',
+  },
+  'linkedin.com': {
+    ios: 'linkedin://',
+    android: 'linkedin://',
+  },
+  'amazon.com': {
+    ios: 'amzn://',
+    android: 'amzn://',
+  },
+  'amazon.in': {
+    ios: 'amzn://',
+    android: 'amzn://',
+  },
+  'flipkart.com': {
+    ios: 'flipkart://',
+    android: 'flipkart://',
+  },
+  'swiggy.com': {
+    ios: 'swiggy://',
+    android: 'swiggy://',
+  },
+  'zomato.com': {
+    ios: 'zomato://',
+    android: 'zomato://',
+  },
+};
+
 function getPlatformSpecificUrl(url: string, userAgent: string) {
   const urlObj = new URL(url);
   const domain = urlObj.hostname.replace('www.', '');
@@ -66,45 +105,6 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
     }
     return url;
   }
-
-  const appSchemes: Record<string, Record<string, string>> = {
-    'youtube.com': {
-      ios: 'youtube://',
-      android: 'vnd.youtube:',
-    },
-    'twitter.com': {
-      ios: 'twitter://',
-      android: 'twitter://',
-    },
-    'instagram.com': {
-      ios: 'instagram://',
-      android: 'instagram://',
-    },
-    'linkedin.com': {
-      ios: 'linkedin://',
-      android: 'linkedin://',
-    },
-    'amazon.com': {
-      ios: 'amzn://',
-      android: 'amzn://',
-    },
-    'amazon.in': {
-      ios: 'amzn://',
-      android: 'amzn://',
-    },
-    'flipkart.com': {
-      ios: 'flipkart://',
-      android: 'flipkart://',
-    },
-    'swiggy.com': {
-      ios: 'swiggy://',
-      android: 'swiggy://',
-    },
-    'zomato.com': {
-      ios: 'zomato://',
-      android: 'zomato://',
-    },
-  };
 
   if (!isMobile) {
     return url;
