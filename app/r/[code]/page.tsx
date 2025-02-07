@@ -24,7 +24,31 @@ async function getOriginalUrl(code: string) {
 
 function getPlatformSpecificUrl(url: string, userAgent: string) {
   const urlObj = new URL(url);
-  
+  const domain = urlObj.hostname.replace('www.', '');
+  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+  const isAndroid = /Android/i.test(userAgent);
+  const isMobile = isIOS || isAndroid;
+  const isInstagram = /instagram/i.test(userAgent);
+  const isFacebook = /fbav|fban/i.test(userAgent);
+
+  // Special handling for Instagram URLs
+  if (domain === 'instagram.com' && isMobile) {
+    const path = urlObj.pathname.split('/').filter(Boolean);
+    if (path.length > 0) {
+      // Handle different Instagram URL types
+      if (path[0] === 'p' && path[1]) { // Post
+        return `instagram://media?id=${path[1]}`;
+      } else if (path[0] === 'reel' && path[1]) { // Reel
+        return `instagram://reels/video/${path[1]}`;
+      } else if (path[0] === 'stories' && path[1]) { // Story
+        return `instagram://story?username=${path[1]}`;
+      } else { // Profile or other
+        return `instagram://user?username=${path[0]}`;
+      }
+    }
+    return url;
+  }
+
   const appSchemes: Record<string, Record<string, string>> = {
     'youtube.com': {
       ios: 'youtube://',
@@ -64,13 +88,12 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
     },
   };
 
-  const domain = urlObj.hostname.replace('www.', '');
-  const platformSchemes = appSchemes[domain];
-  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
-  const isAndroid = /Android/i.test(userAgent);
-  const isMobile = isIOS || isAndroid;
+  if (!isMobile) {
+    return url;
+  }
 
-  if (!platformSchemes || !isMobile) {
+  const platformSchemes = appSchemes[domain];
+  if (!platformSchemes) {
     return url;
   }
 
