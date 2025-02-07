@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 
 interface PageProps {
   params: {
-    code: string;
+    code: Promise<string>;
   };
 }
 
@@ -53,7 +53,7 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
 }
 
 export default async function RedirectPage({ params }: PageProps) {
-  const code = params.code;
+  const code = await (await params).code;
 
   const originalUrl = await getOriginalUrl(code);
 
