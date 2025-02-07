@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { AuroraBackground } from "./ui/aurora-background";
 import { shortenUrl } from "@/app/actions/url";
 import { useState } from "react";
+import { UrlInput } from "./url-input";
 
 export default function Home() {
     const [shortenedUrl, setShortenedUrl] = useState<string>("");
@@ -42,38 +43,16 @@ export default function Home() {
                                         strokeWidth="3"
                                     />
                                 </svg>
-                            </span>{" "} is coming...
+                            </span>{" "}
                         </h2>
 
                         <div className="p-2">
                             <div className="bg-[#353535]/60 backdrop-blur-md px-6 py-6 text-[#f0d8b9] rounded-xl">
                                 <div className="w-full max-w-xl space-y-2">
-                                    <form onSubmit={async (e) => {
-                                        e.preventDefault();
-                                        const formData = new FormData(e.currentTarget);
-                                        const url = formData.get('url') as string;
-                                        const result = await shortenUrl(url);
-                                        if (result.success) {
-                                            const shortUrl = `${window.location.origin}/redirect/${result.code}`;
-                                            setShortenedUrl(shortUrl);
-                                        } else {
-                                            setShortenedUrl('Failed to shorten URL');
-                                        }
-                                    }} className="space-y-4">
-                                        <input
-                                            type="url"
-                                            name="url"
-                                            required
-                                            placeholder="Enter your URL to shorten..."
-                                            className="w-full bg-transparent text-sm font-serif placeholder-white/80 focus:outline-0 border border-white/20 bg-gradient-to-br from-white/20 to-white/5 rounded-full py-3 px-6"
-                                        />
-                                        <button
-                                            type="submit"
-                                            className="w-full group flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-br from-[#b6acac] to-gray-400 px-4 py-3 text-sm font-medium text-gray-900 transition-transform active:scale-[0.985]"
-                                        >
-                                            <span className="text-black font-s">Generate App-Specific URL</span>
-                                        </button>
-                                    </form>
+                                    <UrlInput 
+                                        shortenedUrl={shortenedUrl} 
+                                        setShortenedUrl={setShortenedUrl} 
+                                    />
                                     {shortenedUrl ? (
                                         <motion.div
                                             initial={{ opacity: 0, y: 20 }}
