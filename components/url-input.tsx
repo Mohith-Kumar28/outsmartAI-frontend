@@ -86,7 +86,7 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
                 name="url"
                 type="url"
                 placeholder="Enter your URL..."
-                className="w-full bg-transparent text-sm placeholder-white/80 focus:outline-0"
+                className="w-full bg-transparent text-lg placeholder-white/80 focus:outline-0"
             />
             <button
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -94,7 +94,7 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
                 disabled={isLoading}
                 className="group flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-br from-[#b6acac] to-gray-400 px-4 py-3 text-sm font-medium text-gray-900 transition-transform active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                <span className="text-black font-s">
+                <span className="text-black font-bold text-base">
                     {isLoading ? "Shortening..." : "Shorten URL"}
                 </span>
                 <FiArrowRight className="-mr-4 opacity-0 transition-all group-hover:-mr-0 group-hover:opacity-100 group-active:-rotate-45" />
