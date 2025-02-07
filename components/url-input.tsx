@@ -63,18 +63,23 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
                     timestamp: Date.now()
                 };
                 
-                // Add new URL to the beginning and keep only the last 5
-                const updatedUrls = [newUrl, ...recentUrls].slice(0, 5);
+                // Add new URL to the beginning and keep only the last 3
+                const updatedUrls = [newUrl, ...recentUrls].slice(0, 3);
                 localStorage.setItem('recentUrls', JSON.stringify(updatedUrls));
+                
+                // Clear the input field
+                if (inputRef.current) {
+                    inputRef.current.value = '';
+                }
                 
                 toast({
                     description: "URL shortened successfully!",
                 });
             } else {
-                setShortenedUrl('Failed to shorten URL');
+                setShortenedUrl('');
                 toast({
                     variant: "destructive",
-                    description: "Failed to shorten URL",
+                    description: result.error || "Failed to shorten URL",
                 });
             }
         } catch (error) {

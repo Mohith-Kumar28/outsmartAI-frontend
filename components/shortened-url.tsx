@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface ShortenedUrlProps {
-    url: string
+    url: string;
+    originalUrl?: string;
 }
 
-export function ShortenedUrl({ url }: ShortenedUrlProps) {
+export function ShortenedUrl({ url, originalUrl }: ShortenedUrlProps) {
     const [isCopied, setIsCopied] = useState(false)
 
     const copyToClipboard = async () => {
@@ -27,44 +28,51 @@ export function ShortenedUrl({ url }: ShortenedUrlProps) {
     }
 
     return (
-        <div className="flex items-center gap-2 w-full max-w-full">
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button 
-                            variant="outline" 
-                            size="lg" 
-                            onClick={copyToClipboard} 
-                            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border-white/20 w-full py-4 md:py-6 text-base md:text-lg overflow-hidden"
-                        >
-                            {isCopied ? <Check className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0 text-[#f0d8b9]" /> : <Copy className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0 text-[#f0d8b9]" />}
-                            <span className="truncate text-[#f0d8b9] font-medium md:font-bold">{url}</span>
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="text-sm md:text-base">
-                        <p>{isCopied ? "Copied!" : "Click to copy"}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+        <div className="space-y-2 w-full">
+            <div className="flex items-center gap-2 w-full max-w-full">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button 
+                                variant="outline" 
+                                size="lg" 
+                                onClick={copyToClipboard} 
+                                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border-white/20 w-full py-4 md:py-6 text-base md:text-lg overflow-hidden"
+                            >
+                                {isCopied ? <Check className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0 text-[#f0d8b9]" /> : <Copy className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0 text-[#f0d8b9]" />}
+                                <span className="truncate text-[#f0d8b9] font-medium md:font-bold">{url}</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-sm md:text-base">
+                            <p>{isCopied ? "Copied!" : "Click to copy"}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
 
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button 
-                            variant="outline" 
-                            size="lg" 
-                            onClick={openLink} 
-                            className="flex-shrink-0 bg-white/10 hover:bg-white/20 border-white/20 px-4 py-4 md:py-6"
-                        >
-                            <Link className="h-5 w-5 md:h-6 md:w-6 text-[#f0d8b9]" />
-                            <span className="sr-only">Open link</span>
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="text-sm md:text-base">
-                        <p>Open link in new tab</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button 
+                                variant="outline" 
+                                size="lg" 
+                                onClick={openLink} 
+                                className="flex-shrink-0 bg-white/10 hover:bg-white/20 border-white/20 px-4 py-4 md:py-6"
+                            >
+                                <Link className="h-5 w-5 md:h-6 md:w-6 text-[#f0d8b9]" />
+                                <span className="sr-only">Open link</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-sm md:text-base">
+                            <p>Open link in new tab</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
+            {originalUrl && (
+                <div className="px-2">
+                    <p className="text-sm text-white/60 truncate">Original URL: {originalUrl}</p>
+                </div>
+            )}
         </div>
     )
 }

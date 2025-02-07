@@ -78,7 +78,7 @@ export default function Home() {
                                     />
                                     {shortenedUrl ? (
                                         <div className="space-y-6">
-                                            <ShortenedUrl url={shortenedUrl} />
+                                            <ShortenedUrl url={shortenedUrl} originalUrl={recentUrls[0]?.originalUrl} />
                                         </div>
                                     ) : (
                                         <div className="space-y-4 mt-6">
