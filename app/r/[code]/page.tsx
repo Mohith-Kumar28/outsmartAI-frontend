@@ -31,6 +31,15 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
   const isInstagram = /instagram/i.test(userAgent);
   const isFacebook = /fbav|fban/i.test(userAgent);
 
+  // Add delay for Instagram in-app browser
+  if (isInstagram) {
+    // Add a small delay to ensure the page is fully loaded
+    setTimeout(() => {
+      window.location.href = url;
+    }, 1000);
+    return url;
+  }
+
   // Special handling for Instagram URLs
   if (domain === 'instagram.com' && isMobile) {
     const path = urlObj.pathname.split('/').filter(Boolean);
@@ -117,16 +126,20 @@ export default async function RedirectPage({ params }: PageProps) {
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
       <div className="text-center">
         <p className="text-lg mb-4">We are almost there...</p>
+        <div id="loading" className="animate-spin rounded-full h-8 w-8 border-t-2 border-white mx-auto"></div>
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              // Show loading indicator
+              document.getElementById('loading').style.display = 'block';
+              
               // Try to open app URL first on mobile devices
               if ('${appUrl}' !== '${originalUrl}') {
                 window.location.href = '${appUrl}';
-                // If app doesn't open within 1 second, redirect to web URL
+                // If app doesn't open within 2 seconds, redirect to web URL
                 setTimeout(() => {
                   window.location.href = '${originalUrl}';
-                }, 1000);
+                }, 2000);
               } else {
                 // Direct web URL redirect for desktop
                 window.location.href = '${originalUrl}';
