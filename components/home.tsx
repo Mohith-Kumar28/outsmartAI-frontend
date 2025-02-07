@@ -3,11 +3,22 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { motion } from "framer-motion";
 import { AuroraBackground } from "./ui/aurora-background";
 import { shortenUrl } from "@/app/actions/url";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UrlInput } from "./url-input";
 
 export default function Home() {
     const [shortenedUrl, setShortenedUrl] = useState<string>("");
+    const [isMounted, setIsMounted] = useState<boolean>(false);
+
+    // Add useEffect to handle client-side mounting
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // Return null or a loading state until client-side code is ready
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <>

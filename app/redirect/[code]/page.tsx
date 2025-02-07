@@ -38,13 +38,13 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
 
   const domain = urlObj.hostname.replace('www.', '');
   const platformSchemes = appSchemes[domain];
-
-  if (!platformSchemes) {
-    return url;
-  }
-
   const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
   const isAndroid = /Android/i.test(userAgent);
+  const isMobile = isIOS || isAndroid;
+
+  if (!platformSchemes || !isMobile) {
+    return url;
+  }
 
   const scheme = isAndroid ? platformSchemes.android : platformSchemes.ios;
   return scheme + urlObj.pathname + urlObj.search;
@@ -52,25 +52,35 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
 
 export default async function RedirectPage({ params }: PageProps) {
   const code = (await params).code;
-
   const originalUrl = await getOriginalUrl(code);
 
   if (!originalUrl) {
     notFound();
   }
 
-  const headersList =await headers();
+  const headersList = await headers();
   const userAgent = headersList.get('user-agent') || '';
   const appUrl = getPlatformSpecificUrl(originalUrl, userAgent);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
       <div className="text-center">
-        <p className="text-lg mb-4">Redirecting to app...</p>
+        <p className="text-lg mb-4">Redirecting...</p>
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.location.replace("${appUrl}");
-            setTimeout(() => { window.location.href = "${appUrl}"; }, 1000);`,
+            __html: `
+              // Try to open app URL first on mobile devices
+              if ('${appUrl}' !== '${originalUrl}') {
+                window.location.replace('${appUrl}');
+                // If app doesn't open within 1 second, redirect to web URL
+                setTimeout(() => {
+                  window.location.href = '${originalUrl}';
+                }, 1000);
+              } else {
+                // Direct web URL redirect for desktop
+                window.location.replace('${originalUrl}');
+              }
+            `,
           }}
         />
       </div>
