@@ -50,7 +50,7 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
             const result = await shortenUrl(url);
             
             if (result.success) {
-                const shortUrl = `${window.location.origin}/redirect/${result.code}`;
+                const shortUrl = `${window.location.origin}/r/${result.code}`;
                 setShortenedUrl(shortUrl);
                 
                 // Update recent URLs in local storage
