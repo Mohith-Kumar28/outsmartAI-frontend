@@ -30,6 +30,7 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
     const inputRef = useRef<HTMLInputElement>(null);
     const turn = useMotionValue(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [inputValue, setInputValue] = useState<string>("");
 
     useEffect(() => {
         animate(turn, 1, {
@@ -68,9 +69,7 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
                 localStorage.setItem('recentUrls', JSON.stringify(updatedUrls));
                 
                 // Clear the input field
-                if (inputRef.current) {
-                    inputRef.current.value = '';
-                }
+                setInputValue("");
                 
                 toast({
                     description: "URL shortened successfully!",
@@ -106,6 +105,8 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
                 name="url"
                 type="url"
                 placeholder="Enter your URL..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
                 className="w-full min-w-0 bg-transparent text-lg placeholder-white/80 focus:outline-0 overflow-hidden text-ellipsis"
             />
             <button
