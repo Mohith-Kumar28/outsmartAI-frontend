@@ -139,20 +139,37 @@ export default async function RedirectPage({ params }: PageProps) {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Show loading indicator
-              document.getElementById('loading').style.display = 'block';
-              
-              // Try to open app URL first on mobile devices
-              if ('${appUrl}' !== '${originalUrl}') {
-                window.location.href = '${appUrl}';
-                // If app doesn't open within 2 seconds, redirect to web URL
-                setTimeout(() => {
-                  window.location.href = '${originalUrl}';
-                }, 2000);
-              } else {
-                // Direct web URL redirect for desktop
-                window.location.href = '${originalUrl}';
-              }
+              document.addEventListener('DOMContentLoaded', function() {
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) {
+                  loadingElement.style.display = 'block';
+                }
+
+                const redirectToUrl = (url) => {
+                  try {
+                    window.location.href = url;
+                  } catch (error) {
+                    console.error('Redirect failed:', error);
+                    // Fallback to original URL if redirect fails
+                    window.location.href = '${originalUrl}';
+                  }
+                };
+
+                const isAppUrl = '${appUrl}' !== '${originalUrl}';
+                
+                if (isAppUrl) {
+                  // Try app URL first
+                  redirectToUrl('${appUrl}');
+                  
+                  // Fallback to web URL after delay
+                  setTimeout(() => {
+                    redirectToUrl('${originalUrl}');
+                  }, 2500); // Increased delay for better app launch chance
+                } else {
+                  // Direct web URL redirect
+                  redirectToUrl('${originalUrl}');
+                }
+              });
             `,
           }}
         />
