@@ -70,53 +70,72 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
   const isInstagram = /instagram/i.test(userAgent);
   const isFacebook = /fbav|fban/i.test(userAgent);
 
-  // Special handling for Instagram in-app browser
-  if (isInstagram) {
-    // For YouTube URLs
-    if (domain === 'youtube.com' || domain === 'youtu.be') {
-      return isIOS ? `youtube://${urlObj.pathname}${urlObj.search}` : `vnd.youtube:${urlObj.pathname}${urlObj.search}`;
-    }
-    // For Amazon URLs
-    if (domain === 'amazon.com' || domain === 'amazon.in') {
-      return `amzn://${urlObj.pathname}${urlObj.search}`;
-    }
-    // For other supported apps
-    const platformSchemes = appSchemes[domain];
-    if (platformSchemes) {
-      const scheme = isAndroid ? platformSchemes.android : platformSchemes.ios;
-      return scheme + urlObj.pathname + urlObj.search;
-    }
-  }
-
-  // Special handling for Instagram URLs
-  if (domain === 'instagram.com' && isMobile) {
-    const path = urlObj.pathname.split('/').filter(Boolean);
-    if (path.length > 0) {
-      // Handle different Instagram URL types
-      if (path[0] === 'p' && path[1]) { // Post
-        return `instagram://media?id=${path[1]}`;
-      } else if (path[0] === 'reel' && path[1]) { // Reel
-        return `instagram://reels/video/${path[1]}`;
-      } else if (path[0] === 'stories' && path[1]) { // Story
-        return `instagram://story?username=${path[1]}`;
-      } else { // Profile or other
-        return `instagram://user?username=${path[0]}`;
-      }
-    }
-    return url;
-  }
-
+  // Return original URL for desktop browsers
   if (!isMobile) {
     return url;
   }
 
+  // YouTube handling
+  if (domain === 'youtube.com' || domain === 'youtu.be') {
+    const videoId = domain === 'youtu.be' ? urlObj.pathname.slice(1) : urlObj.searchParams.get('v');
+    if (videoId) {
+      if (isAndroid) {
+        return `intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end;`;
+      } else {
+        return `youtube://watch?v=${videoId}`;
+      }
+    }
+  }
+
+  // Instagram handling
+  if (domain === 'instagram.com') {
+    const path = urlObj.pathname.split('/').filter(Boolean);
+    if (path.length > 0) {
+      if (isAndroid) {
+        let intentUrl = 'intent://instagram.com';
+        if (path[0] === 'p' && path[1]) { // Post
+          intentUrl = `intent://instagram.com/p/${path[1]}#Intent;package=com.instagram.android;scheme=https;end;`;
+        } else if (path[0] === 'reel' && path[1]) { // Reel
+          intentUrl = `intent://instagram.com/reel/${path[1]}#Intent;package=com.instagram.android;scheme=https;end;`;
+        } else { // Profile or other
+          intentUrl = `intent://instagram.com/${path[0]}#Intent;package=com.instagram.android;scheme=https;end;`;
+        }
+        return intentUrl;
+      } else {
+        if (path[0] === 'p' && path[1]) { // Post
+          return `instagram://media?id=${path[1]}`;
+        } else if (path[0] === 'reel' && path[1]) { // Reel
+          return `instagram://reels/video/${path[1]}`;
+        } else if (path[0] === 'stories' && path[1]) { // Story
+          return `instagram://story?username=${path[1]}`;
+        } else { // Profile or other
+          return `instagram://user?username=${path[0]}`;
+        }
+      }
+    }
+  }
+
+  // Amazon handling
+  if (domain === 'amazon.com' || domain === 'amazon.in') {
+    if (isAndroid) {
+      return `intent://amazon.com${urlObj.pathname}${urlObj.search}#Intent;package=com.amazon.mShop.android.shopping;scheme=https;end;`;
+    } else {
+      return `amzn://${urlObj.pathname}${urlObj.search}`;
+    }
+  }
+
+  // Other supported apps
   const platformSchemes = appSchemes[domain];
   if (!platformSchemes) {
     return url;
   }
 
-  const scheme = isAndroid ? platformSchemes.android : platformSchemes.ios;
-  return scheme + urlObj.pathname + urlObj.search;
+  if (isAndroid) {
+    // Default Android intent URL format for other apps
+    return `intent://${domain}${urlObj.pathname}${urlObj.search}#Intent;scheme=https;package=${platformSchemes.android};end;`;
+  } else {
+    return platformSchemes.ios + urlObj.pathname + urlObj.search;
+  }
 }
 
 export default async function RedirectPage({ params }: PageProps) {
@@ -150,23 +169,44 @@ export default async function RedirectPage({ params }: PageProps) {
                     window.location.href = url;
                   } catch (error) {
                     console.error('Redirect failed:', error);
-                    // Fallback to original URL if redirect fails
                     window.location.href = '${originalUrl}';
                   }
                 };
 
                 const isAppUrl = '${appUrl}' !== '${originalUrl}';
+                const isAndroid = /android/i.test(navigator.userAgent);
+                const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
                 
                 if (isAppUrl) {
-                  // Try app URL first
-                  redirectToUrl('${appUrl}');
-                  
-                  // Fallback to web URL after delay
-                  setTimeout(() => {
-                    redirectToUrl('${originalUrl}');
-                  }, 2500); // Increased delay for better app launch chance
+                  let hasRedirected = false;
+                  let fallbackTimer;
+
+                  // Create hidden iframe for iOS app detection
+                  if (isIOS) {
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                    iframe.src = '${appUrl}';
+                  } else {
+                    redirectToUrl('${appUrl}');
+                  }
+
+                  // Set up app store fallback
+                  fallbackTimer = setTimeout(() => {
+                    if (!hasRedirected) {
+                      hasRedirected = true;
+                      redirectToUrl('${originalUrl}');
+                    }
+                  }, 2500);
+
+                  // Handle page visibility change
+                  document.addEventListener('visibilitychange', function() {
+                    if (document.hidden) {
+                      hasRedirected = true;
+                      clearTimeout(fallbackTimer);
+                    }
+                  });
                 } else {
-                  // Direct web URL redirect
                   redirectToUrl('${originalUrl}');
                 }
               });
