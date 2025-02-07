@@ -99,14 +99,14 @@ export default async function RedirectPage({ params }: PageProps) {
             __html: `
               // Try to open app URL first on mobile devices
               if ('${appUrl}' !== '${originalUrl}') {
-                window.location.replace('${appUrl}');
+                window.location.href = '${appUrl}';
                 // If app doesn't open within 1 second, redirect to web URL
                 setTimeout(() => {
                   window.location.href = '${originalUrl}';
                 }, 1000);
               } else {
                 // Direct web URL redirect for desktop
-                window.location.replace('${originalUrl}');
+                window.location.href = '${originalUrl}';
               }
             `,
           }}
