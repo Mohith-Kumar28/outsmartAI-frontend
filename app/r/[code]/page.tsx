@@ -34,6 +34,34 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
       ios: 'twitter://',
       android: 'twitter://',
     },
+    'instagram.com': {
+      ios: 'instagram://',
+      android: 'instagram://',
+    },
+    'linkedin.com': {
+      ios: 'linkedin://',
+      android: 'linkedin://',
+    },
+    'amazon.com': {
+      ios: 'amzn://',
+      android: 'amzn://',
+    },
+    'amazon.in': {
+      ios: 'amzn://',
+      android: 'amzn://',
+    },
+    'flipkart.com': {
+      ios: 'flipkart://',
+      android: 'flipkart://',
+    },
+    'swiggy.com': {
+      ios: 'swiggy://',
+      android: 'swiggy://',
+    },
+    'zomato.com': {
+      ios: 'zomato://',
+      android: 'zomato://',
+    },
   };
 
   const domain = urlObj.hostname.replace('www.', '');
