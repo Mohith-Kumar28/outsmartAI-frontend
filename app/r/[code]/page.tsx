@@ -31,13 +31,22 @@ function getPlatformSpecificUrl(url: string, userAgent: string) {
   const isInstagram = /instagram/i.test(userAgent);
   const isFacebook = /fbav|fban/i.test(userAgent);
 
-  // Add delay for Instagram in-app browser
+  // Special handling for Instagram in-app browser
   if (isInstagram) {
-    // Add a small delay to ensure the page is fully loaded
-    setTimeout(() => {
-      window.location.href = url;
-    }, 1000);
-    return url;
+    // For YouTube URLs
+    if (domain === 'youtube.com' || domain === 'youtu.be') {
+      return isIOS ? `youtube://${urlObj.pathname}${urlObj.search}` : `vnd.youtube:${urlObj.pathname}${urlObj.search}`;
+    }
+    // For Amazon URLs
+    if (domain === 'amazon.com' || domain === 'amazon.in') {
+      return `amzn://${urlObj.pathname}${urlObj.search}`;
+    }
+    // For other supported apps
+    const platformSchemes = appSchemes[domain];
+    if (platformSchemes) {
+      const scheme = isAndroid ? platformSchemes.android : platformSchemes.ios;
+      return scheme + urlObj.pathname + urlObj.search;
+    }
   }
 
   // Special handling for Instagram URLs
