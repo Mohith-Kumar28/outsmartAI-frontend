@@ -34,7 +34,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="w-full mx-auto h-screen overflow-scroll bg-black text-[#f0d8b9]">
+            <div className="w-full mx-auto h-screen overflow-y-auto bg-black text-[#f0d8b9]">
                 <AuroraBackground>
                     <motion.div
                         initial={{ opacity: 0.0, y: 40 }}
@@ -44,9 +44,9 @@ export default function Home() {
                             duration: 0.8,
                             ease: "easeInOut",
                         }}
-                        className="relative flex flex-col gap-4 items-center justify-center px-4"
+                        className="relative flex flex-col gap-4 items-center justify-center px-4 py-8 md:py-12"
                     >
-                        <h2 className="text-[#f0d8b9] text-3xl md:text-6xl font-playfair text-center pt-6">
+                        <h2 className="text-[#f0d8b9] text-3xl md:text-6xl font-playfair text-center pt-6 max-w-4xl">
                             <span className="relative">
                                 OutsmartAI
                                 <svg
@@ -69,9 +69,9 @@ export default function Home() {
                             </span>{" "}
                         </h2>
 
-                        <div className="p-2">
-                            <div className="bg-[#353535]/60 backdrop-blur-md px-6 py-6 text-[#f0d8b9] rounded-xl">
-                                <div className="w-full max-w-xl space-y-10">
+                        <div className="w-full max-w-2xl mx-auto p-2">
+                            <div className="bg-[#353535]/60 backdrop-blur-md px-4 md:px-6 py-6 text-[#f0d8b9] rounded-xl">
+                                <div className="w-full space-y-10">
                                     <UrlInput 
                                         shortenedUrl={shortenedUrl} 
                                         setShortenedUrl={setShortenedUrl} 

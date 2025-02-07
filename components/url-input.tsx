@@ -93,7 +93,7 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
             onClick={() => {
                 inputRef.current?.focus();
             }}
-            className="relative flex w-full items-center gap-2 rounded-full border border-white/20 bg-gradient-to-br from-white/20 to-white/5 py-1.5 pl-6 pr-1.5"
+            className="relative flex w-full max-w-full items-center gap-2 rounded-full border border-white/20 bg-gradient-to-br from-white/20 to-white/5 py-1.5 pl-6 pr-1.5"
         >
             <input
                 required
@@ -101,13 +101,13 @@ const BeamInput: React.FC<UrlInputProps> = ({ shortenedUrl, setShortenedUrl }) =
                 name="url"
                 type="url"
                 placeholder="Enter your URL..."
-                className="w-full bg-transparent text-lg placeholder-white/80 focus:outline-0"
+                className="w-full min-w-0 bg-transparent text-lg placeholder-white/80 focus:outline-0 overflow-hidden text-ellipsis"
             />
             <button
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
                 type="submit"
                 disabled={isLoading}
-                className="group flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-br from-[#b6acac] to-gray-400 px-4 py-3 text-sm font-medium text-gray-900 transition-transform active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-br from-[#b6acac] to-gray-400 px-4 py-3 text-sm font-medium text-gray-900 transition-transform active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
                 <span className="text-black font-bold text-base">
                     {isLoading ? "Shortening..." : "Shorten URL"}
