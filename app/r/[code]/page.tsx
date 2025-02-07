@@ -93,7 +93,7 @@ export default async function RedirectPage({ params }: PageProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
       <div className="text-center">
-        <p className="text-lg mb-4">Redirecting...</p>
+        <p className="text-lg mb-4">We are almost there...</p>
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -69,9 +69,9 @@ export default function Home() {
                             </span>{" "}
                         </h2>
 
-                        <div className="w-full max-w-2xl mx-auto p-2">
+                        <div className="w-full mx-auto p-2">
                             <div className="bg-[#353535]/60 backdrop-blur-md px-4 md:px-6 py-6 text-[#f0d8b9] rounded-xl">
-                                <div className="w-full space-y-10">
+                                <div className=" space-y-10 w-[80vw] md:w-auto md:max-w-2xl">
                                     <UrlInput 
                                         shortenedUrl={shortenedUrl} 
                                         setShortenedUrl={setShortenedUrl} 

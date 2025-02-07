@@ -28,8 +28,8 @@ export function ShortenedUrl({ url, originalUrl }: ShortenedUrlProps) {
     }
 
     return (
-        <div className="space-y-2 w-full">
-            <div className="flex items-center gap-2 w-full max-w-full">
+        <div className="space-y-2 ">
+            <div className="flex items-center gap-2 w-full ">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
